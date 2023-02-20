@@ -1,5 +1,5 @@
-require("LifeBoatAPI.Utils.LBCopy")
---require("Libs.LBCopy")
+--require("LifeBoatAPI.Utils.LBCopy")
+require("Libs.LBCopy")
 
 ---@section Quaternion 1 Quaternion  {x,y,z; w}
 ---@class Quaternion
@@ -24,13 +24,13 @@ Quaternion = {
 	---@return Quaternion
 	newFromEuler = function(cls, X, Y, Z)
 		local v = { 1, 0, 0 }
-		local q = cls:newRotateQuaternion(X, v) --roll(X)
+		local q = cls:newRotateQuaternion(X, v) --pitch(X)
 
-		v = { 0, 1, 0 }
+		v = q:rotateVector({ 0, 1, 0 })
 		q = cls:newRotateQuaternion(Y, v):product(q) --yaw(Y)
 
 		v = q:rotateVector({ 0, 0, 1 })
-		q = cls:newRotateQuaternion(Z, v):product(q) --pitch(Z)
+		q = cls:newRotateQuaternion(Z, v):product(q) --roll(Z)
 
 		return q
 	end;

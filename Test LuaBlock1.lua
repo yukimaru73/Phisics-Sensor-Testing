@@ -1,5 +1,6 @@
 require("Libs.PhysicsSensorLib")
 require("Libs.Vector3")
+require("Libs.PID")
 
 function cut(number)
 	return string.format("%-.2f", number)
@@ -11,7 +12,8 @@ end
 
 
 PHS = PhisicsSensorLib:new()
-VEC_BASE = Vector3:new(0, 0, 1)
+PivotPID = PID:new(7, 0.007, 0.2, 0.05)
+VEC_BASE = Vector3:new(1, 1, 0)
 
 function rad2turn(angle)
 	return angle / (2 * math.pi)

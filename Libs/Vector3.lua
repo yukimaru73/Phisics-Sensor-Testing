@@ -81,7 +81,7 @@ Vector3 = {
 	---@param self Vector3
 	---@return number azimuth(rad)
 	getAzimuth = function(self)
-		return math.atan(self.vec[3], self.vec[1])
+		return math.atan(self.vec[1], self.vec[3])
 	end;
 	---@endsection
 
