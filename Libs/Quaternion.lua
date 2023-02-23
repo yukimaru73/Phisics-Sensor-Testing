@@ -16,23 +16,21 @@ Quaternion = {
 		return LifeBoatAPI.lb_copy(cls, { x = x or 0, y = y or 0, z = z or 0, w = w or 0 })
 	end;
 
-	---@section newFromEuler
+	---@section newFromEuler Euler order is X-Y-Z
 	---@param cls Quaternion
-	---@param Z number radian
-	---@param X number radian
-	---@param Y number radian
+	---@param x number
+	---@param y number
+	---@param z number
 	---@return Quaternion
-	newFromEuler = function(cls, X, Y, Z)
-		local v = { 1, 0, 0 }
-		local q = cls:newRotateQuaternion(X, v) --pitch(X)
-
-		v = q:rotateVector({ 0, 1, 0 })
-		q = cls:newRotateQuaternion(Y, v):product(q) --yaw(Y)
-
-		v = q:rotateVector({ 0, 0, 1 })
-		q = cls:newRotateQuaternion(Z, v):product(q) --roll(Z)
-
-		return q
+	newFromEuler = function(cls, x, y, z)
+		local cx, cy, cz = math.cos(x / 2), math.cos(y / 2), math.cos(z / 2)
+		local sx, sy, sz = math.sin(x / 2), math.sin(y / 2), math.sin(z / 2)
+		return cls:_new(
+			sx * cy * cz - cx * sy * sz,
+			cx * sy * cz + sx * cy * sz,
+			cx * cy * sz - sx * sy * cz,
+			cx * cy * cz + sx * sy * sz
+		)
 	end;
 	---@endsection
 

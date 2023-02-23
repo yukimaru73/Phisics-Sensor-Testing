@@ -13,7 +13,7 @@ end
 
 PHS = PhisicsSensorLib:new()
 PivotPID = PID:new(7, 0.007, 0.2, 0.05)
-VEC_BASE = Vector3:new(1, 1, 0)
+VEC_PREV = Vector3:new(0, 0, 0)
 
 PIVOT_H = 0
 
@@ -26,13 +26,15 @@ function onTick()
 		debug.log("$$|| No Signal ||$$")
 		return
 	end
-	VEC_BASE = Vector3:new(input.getNumber(15), input.getNumber(16), input.getNumber(17))
 	PHS:update(1)
+	local targetPosition = Vector3:new(input.getNumber(15), input.getNumber(16), input.getNumber(17))
+	local selfPosition = Vector3:new(PHS.GPS[1], PHS.GPS[2], PHS.GPS[3])
+	
+	local viewVecGrobal = targetPosition:sub(selfPosition):normalize()
+	local viewVecLocal = Vector3:newFromArray(PHS:rotateVectorWorld2Local(viewVecGrobal.vec, 3))
 
-	local v = PHS:rotateVectorWorld2Local(VEC_BASE.vec)
-	local vec_local = Vector3:new(v[1], v[2], v[3])
-	local azimuth = vec_local:getAzimuth()
-	local elevation = vec_local:getElevation()
+	local azimuth = viewVecLocal:getAzimuth()
+	local elevation = viewVecLocal:getElevation()
 
 	output.setNumber(1, 4 * rad2turn(azimuth))
 	output.setNumber(2, 4 * rad2turn(elevation))
@@ -40,5 +42,7 @@ function onTick()
 
 	output.setNumber(3, PivotPID:update((PIVOT_H - input.getNumber(18) + 1.5) % 1 - 0.5, 0))
 
-	debugTableAxis("Vector", v)
+
+	debugTableAxis("Vector", viewVecLocal.vec)
+	
 end

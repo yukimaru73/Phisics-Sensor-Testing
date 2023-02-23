@@ -30,14 +30,12 @@ PhisicsSensorLib = {
 	---@param startChannel number
 	---@return nil
 	update = function(self, startChannel)
-		for i = 0, 3 do
+		for i = 1, 3 do
 			self.GPS[i] = input.getNumber(startChannel + i - 1)
 			self.euler[i] = input.getNumber(startChannel + i + 2)
 			self.velocity[i] = input.getNumber(startChannel + i + 5)
+			self.anglerSpeed[i] = input.getNumber(startChannel + i + 8) * math.pi / 30
 		end
-		self.anglerSpeed[1] = input.getNumber(startChannel + 10)
-		self.anglerSpeed[2] = input.getNumber(startChannel + 11)
-		self.anglerSpeed[3] = -input.getNumber(startChannel + 12)
 		self.absVelocity = input.getNumber(startChannel + 13)
 		self.absAnglerSpeed = input.getNumber(startChannel + 14)
 	end;
@@ -45,27 +43,33 @@ PhisicsSensorLib = {
 
 	---@section _getQuaternion
 	---@param self PhysicsSensorLib
+	---@param ticks number
 	---@return Quaternion
-	_getQuaternion = function(self)
-		return Quaternion:newFromEuler(self.euler[1], self.euler[2], self.euler[3])
+	_getQuaternion = function(self, ticks)
+		return Quaternion:newFromEuler(
+			self.euler[1] + ticks * self.anglerSpeed[1],
+			self.euler[2] + ticks * self.anglerSpeed[2],
+			self.euler[3] + ticks * self.anglerSpeed[3])
 	end;
 	---@endsection
 
 	---@section rotateVectorLocal2World
 	---@param self PhysicsSensorLib
+	---@param ticks number
 	---@param vector table[X, Y, Z]
 	---@return table[X, Y, Z]
-	rotateVectorLocal2World = function(self, vector)
-		return self:_getQuaternion():rotateVector(vector)
+	rotateVectorLocal2World = function(self, vector, ticks)
+		return self:_getQuaternion(ticks):rotateVector(vector)
 	end;
 	---@endsection
 
 	---@section rotateVectorWorld2Local
 	---@param self PhysicsSensorLib
 	---@param vector table[X, Y, Z]
+	---@param ticks number
 	---@return table[X, Y, Z]
-	rotateVectorWorld2Local = function(self, vector)
-		return self:_getQuaternion():getConjugateQuaternion():rotateVector(vector)
+	rotateVectorWorld2Local = function(self, vector, ticks)
+		return self:_getQuaternion(ticks):getConjugateQuaternion():rotateVector(vector)
 	end;
 	---@endsection
 

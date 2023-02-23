@@ -24,6 +24,15 @@ Vector3 = {
 	end;
 	---@endsection
 
+	---@section newFromArray
+	---@param cls Vector3
+	---@param arr table
+	---@return Vector3
+	newFromArray = function(cls, arr)
+		return Vector3:new(arr[1], arr[2], arr[3])
+	end;
+	---@endsection
+
 	---@section getNorm
 	---@param self Vector3
 	---@return number
@@ -32,10 +41,10 @@ Vector3 = {
 	end;
 	---@endsection
 
-	---@section getNormalizedVector
+	---@section normalize
 	---@param self Vector3
 	---@return Vector3
-	getNormalizedVector = function(self)
+	normalize = function(self)
 		local norm = self:getNorm()
 		return self:new(self.vec[1] / norm, self.vec[2] / norm, self.vec[3] / norm)
 	end;
