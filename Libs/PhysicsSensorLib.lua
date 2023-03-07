@@ -7,9 +7,9 @@ require("Libs.Quaternion")
 ---@field GPS table[X, Y, Z]
 ---@field euler table[X, Y, Z]
 ---@field velocity table[X, Y, Z]
----@field anglerSpeed table[X, Y, Z]
+---@field angularSpeed table[X, Y, Z]
 ---@field absVelocity number
----@field absAnglerSpeed number
+---@field absAngularSpeed number
 PhisicsSensorLib = {
 	---@param cls PhysicsSensorLib
 	---@overload fun(cls:PhysicsSensorLib):PhysicsSensorLib creates a new zero-initialized PhisicsSensorLib
@@ -19,9 +19,9 @@ PhisicsSensorLib = {
 			GPS = GPS or { 0, 0, 0 },
 			euler = euler or { 0, 0, 0 },
 			velocity = velocity or { 0, 0, 0 },
-			anglerSpeed = anglerSpeed or { 0, 0, 0 },
+			angularSpeed = anglerSpeed or { 0, 0, 0 },
 			absVelocity = absVelocity or 0,
-			absAnglerSpeed = absAnglerSpeed or 0
+			absAngularSpeed = absAnglerSpeed or 0
 		})
 	end;
 
@@ -34,10 +34,10 @@ PhisicsSensorLib = {
 			self.GPS[i] = input.getNumber(startChannel + i - 1)
 			self.euler[i] = input.getNumber(startChannel + i + 2)
 			self.velocity[i] = input.getNumber(startChannel + i + 5)
-			self.anglerSpeed[i] = input.getNumber(startChannel + i + 8) * math.pi / 30
+			self.angularSpeed[i] = input.getNumber(startChannel + i + 8) * math.pi / 30
 		end
-		self.absVelocity = input.getNumber(startChannel + 13)
-		self.absAnglerSpeed = input.getNumber(startChannel + 14)
+		self.absVelocity = input.getNumber(startChannel + 12)
+		self.absAnglerSpeed = input.getNumber(startChannel + 13)
 	end;
 	---@endsection
 
@@ -47,9 +47,9 @@ PhisicsSensorLib = {
 	---@return Quaternion
 	_getQuaternion = function(self, ticks)
 		return Quaternion:newFromEuler(
-			self.euler[1] + ticks * self.anglerSpeed[1],
-			self.euler[2] + ticks * self.anglerSpeed[2],
-			self.euler[3] + ticks * self.anglerSpeed[3])
+			self.euler[1] + ticks * self.angularSpeed[1],
+			self.euler[2] + ticks * self.angularSpeed[2],
+			self.euler[3] + ticks * self.angularSpeed[3])
 	end;
 	---@endsection
 
